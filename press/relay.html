@@ -1,0 +1,17 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>relay</title>
+<script>
+// Temporary: hands this site's own screenshots to the App Store Connect tab
+// that opened it, for uploading. Removed once the listing is submitted.
+(async () => {
+  const paths = decodeURIComponent(location.hash.slice(1)).split(",").filter(Boolean);
+  const files = [];
+  for (const p of paths) {
+    const r = await fetch(p);
+    files.push({ name: p.split("/").pop(), path: p, buf: await r.arrayBuffer() });
+  }
+  window.opener.postMessage({ relay: true, files }, "https://appstoreconnect.apple.com", files.map(f => f.buf));
+  document.title = "sent " + files.length;
+})();
+</script>
